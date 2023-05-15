@@ -1,0 +1,6 @@
+[submodule "modules/eigen"]
+	path = modules/eigen
+	url = https://gitlab.com/libeigen/eigen.git
+[submodule "modules/juce"]
+	path = modules/juce
+	url = https://github.com/juce-framework/JUCE.git

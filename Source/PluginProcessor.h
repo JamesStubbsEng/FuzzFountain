@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include <Eigen/Core>
 
 //==============================================================================
 /**
@@ -70,5 +71,6 @@ private:
     dsp::Gain<float> outputGain;
 
     AudioBuffer<float> parallelBuffer;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FuzzFountainAudioProcessor)
 };
