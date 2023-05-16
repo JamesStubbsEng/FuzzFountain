@@ -6,7 +6,22 @@
               pluginName="Fuzz Fountain" cppLanguageStandard="17" headerPath="..\..\modules\eigen\">
   <MAINGROUP id="dfATNf" name="FuzzFountain">
     <GROUP id="{EE9E1FE6-4BE9-4E7E-88F4-5BE1DB0F01E6}" name="Source">
-      <GROUP id="{2DBD7E44-FDB7-E268-2625-2B2924128840}" name="dsp"/>
+      <GROUP id="{2DBD7E44-FDB7-E268-2625-2B2924128840}" name="dsp">
+        <FILE id="cb2dUg" name="CircuitBase.cpp" compile="1" resource="0" file="Source/dsp/CircuitBase.cpp"/>
+        <FILE id="OgkNvs" name="CircuitBase.h" compile="0" resource="0" file="Source/dsp/CircuitBase.h"/>
+        <FILE id="LkPrt1" name="DampedNewtonRaphson.cpp" compile="1" resource="0"
+              file="Source/dsp/DampedNewtonRaphson.cpp"/>
+        <FILE id="rmh54Q" name="DampedNewtonRaphson.h" compile="0" resource="0"
+              file="Source/dsp/DampedNewtonRaphson.h"/>
+        <FILE id="jUI6om" name="DiodeClipperCircuit.cpp" compile="1" resource="0"
+              file="Source/dsp/DiodeClipperCircuit.cpp"/>
+        <FILE id="xn9vMa" name="DiodeClipperCircuit.h" compile="0" resource="0"
+              file="Source/dsp/DiodeClipperCircuit.h"/>
+        <FILE id="jQAbhf" name="DiodeNLEQ.cpp" compile="1" resource="0" file="Source/dsp/DiodeNLEQ.cpp"/>
+        <FILE id="JB2pc8" name="DiodeNLEQ.h" compile="0" resource="0" file="Source/dsp/DiodeNLEQ.h"/>
+        <FILE id="Y8jjBA" name="NonLinearEquationBase.h" compile="0" resource="0"
+              file="Source/dsp/NonLinearEquationBase.h"/>
+      </GROUP>
       <FILE id="UZjxqX" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="oqg5fv" name="PluginProcessor.h" compile="0" resource="0"
