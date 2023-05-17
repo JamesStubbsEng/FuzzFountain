@@ -16,8 +16,8 @@ class DiodeNLEQ : public NonLinearEquationBase
 {
 public:
     DiodeNLEQ();
-    float calculateCurrents(Eigen::MatrixXd voltages, int vn_index, int function_index) override;
-    void calculateJacobian(Eigen::MatrixXd* jacobian, Eigen::MatrixXd voltages, int vn_index) override;
+    float calculateCurrents(Eigen::MatrixXf voltages, int vn_index, int function_index) override;
+    void calculateJacobian(Eigen::MatrixXf* jacobian, Eigen::MatrixXf voltages, int vn_index) override;
 
 private:
     float Is = 1e-15;

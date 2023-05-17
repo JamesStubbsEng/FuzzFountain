@@ -31,6 +31,8 @@ FuzzFountainAudioProcessor::FuzzFountainAudioProcessor()
     inputGainParameter = parameters.getRawParameterValue("inputGain");
     mixParameter = parameters.getRawParameterValue("mix");
     outputGainParameter = parameters.getRawParameterValue("outputGain");
+
+    //TODO: build circuit
 }
 
 FuzzFountainAudioProcessor::~FuzzFountainAudioProcessor()

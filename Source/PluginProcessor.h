@@ -10,6 +10,8 @@
 
 #include <JuceHeader.h>
 #include <Eigen/Core>
+#include "dsp/CircuitBase.h"
+#include "dsp/DiodeNLEQ.h"
 
 //==============================================================================
 /**
