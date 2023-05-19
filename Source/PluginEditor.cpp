@@ -73,8 +73,21 @@ void FuzzFountainAudioProcessorEditor::resized()
     m(0, 0) = 3;
     m(1, 0) = 2.5;
     m(0, 1) = -1;
-    m(1, 1) = m(1, 0) + m(0, 1);
+    m(1, 1) = 2;
+
+    Eigen::MatrixXd m2(2, 1);
+    m2(0, 0) = 7;
+    m2(1, 0) = -8;
+
+    Eigen::MatrixXd m3(2, 3);
+    m3.topLeftCorner(m.rows(), m.cols()) = m;
+
     std::ostringstream outStream;
-    outStream << m << std::endl;
-    DBG(outStream.str());   
+    outStream << m3 << std::endl;
+    DBG(outStream.str());
+
+    //m3.topRightCorner(m2.rows(), m2.cols()) = m2;
+    m3.bottomRightCorner(m2.rows(), m2.cols()) = m2;
+    outStream << m3 << std::endl;
+    DBG(outStream.str()); 
 }

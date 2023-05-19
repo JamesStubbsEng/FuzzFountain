@@ -8,6 +8,8 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 //==============================================================================
 FuzzFountainAudioProcessor::FuzzFountainAudioProcessor()
@@ -32,7 +34,18 @@ FuzzFountainAudioProcessor::FuzzFountainAudioProcessor()
     mixParameter = parameters.getRawParameterValue("mix");
     outputGainParameter = parameters.getRawParameterValue("outputGain");
 
-    //TODO: build circuit
+    //TODO: build circuit + nonrealtime test with sine funciton
+
+    float fs_test = 44100.0f;
+    float fc_test = 400.0f;
+    //test first 100 samples of sin
+    for (int i = 0; i < 100; i++)
+    {
+        float vin = std::sinf(2 * M_PI * fc_test * i / fs_test);
+        
+        //todo: process
+
+    }
 }
 
 FuzzFountainAudioProcessor::~FuzzFountainAudioProcessor()
