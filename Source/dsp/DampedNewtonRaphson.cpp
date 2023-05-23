@@ -10,22 +10,22 @@
 
 #include "DampedNewtonRaphson.h"
 
-DampedNewtonRaphson::DampedNewtonRaphson(int numberOfNonLinearFunctions, Eigen::MatrixXd* K, std::vector<NonLinearEquationBase*>* nonLinearComponents)
+DampedNewtonRaphson::DampedNewtonRaphson(int numberOfNonLinearFunctions, Eigen::MatrixXd* K, std::vector<NonLinearEquationBase>* nonLinearComponents)
 {
     //pass parameters to members
     numberOfNonLinearFunctions = numberOfNonLinearFunctions;
     this->K = K;
     this->nonLinearComponents = nonLinearComponents;
-    numComponents = nonLinearComponents->size();
+    this->numComponents = nonLinearComponents->size();
 
     //initialize member matrices with zeros
-    vn_new = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, 1);
-    in_new = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, 1);
-    eye = Eigen::MatrixXd::Identity(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
-    componentsJacobian = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
-    J = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
-    F = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
-    F_new = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
+    this->vn_new = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, 1);
+    this->in_new = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, 1);
+    this->eye = Eigen::MatrixXd::Identity(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
+    this->componentsJacobian = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
+    this->J = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
+    this->F = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
+    this->F_new = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
 }
 
 void DampedNewtonRaphson::solve(Eigen::MatrixXd* vn, Eigen::MatrixXd* in, Eigen::MatrixXd* p)
@@ -72,11 +72,11 @@ void DampedNewtonRaphson::getCurrents(Eigen::MatrixXd* vn, Eigen::MatrixXd* in)
     vn_index = 0;
     for (int componentIndex = 0; componentIndex < numComponents; componentIndex++)
     {
-        numberOfFunctions = nonLinearComponents->at(componentIndex)->getNumberOfFunctions();
-        nonLinearComponents->at(componentIndex)->calculateJacobian(&componentsJacobian, *vn, vn_index);
+        numberOfFunctions = (*nonLinearComponents)[componentIndex].getNumberOfFunctions();
+        (*nonLinearComponents)[componentIndex].calculateJacobian(&componentsJacobian, *vn, vn_index);
         for (int functionIndex = 0; functionIndex < numberOfFunctions; functionIndex++)
         {
-            (*in)(functionIndex + vn_index) = nonLinearComponents->at(componentIndex)->calculateCurrents(*vn, vn_index, functionIndex);
+            (*in)(functionIndex + vn_index) = (*nonLinearComponents)[componentIndex].calculateCurrents(*vn, vn_index, functionIndex);
         }
         vn_index += numberOfFunctions;
     }

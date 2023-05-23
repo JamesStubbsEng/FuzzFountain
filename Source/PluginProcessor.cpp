@@ -34,17 +34,50 @@ FuzzFountainAudioProcessor::FuzzFountainAudioProcessor()
     mixParameter = parameters.getRawParameterValue("mix");
     outputGainParameter = parameters.getRawParameterValue("outputGain");
 
-    //TODO: build circuit + nonrealtime test with sine funciton
+    //Test: build circuit + nonrealtime test with sine funciton
+    std::unique_ptr<std::vector<float>> resistors = std::make_unique<std::vector<float>>();
+    resistors->push_back(240e3);
+    std::unique_ptr<std::vector<float>> capacitors = std::make_unique<std::vector<float>>();
+    capacitors->push_back(80e-12);
+
+    std::unique_ptr <Eigen::MatrixXf> NR = std::make_unique<Eigen::MatrixXf>();
+    *NR = Eigen::MatrixXf::Zero(1, 2);
+    *NR << 1, -1;
+    std::unique_ptr <Eigen::MatrixXf> Nv = std::make_unique<Eigen::MatrixXf>();
+    *Nv = Eigen::MatrixXf::Zero(1, 1);
+    *Nv << 0;
+    std::unique_ptr <Eigen::MatrixXf> Nx = std::make_unique<Eigen::MatrixXf>();
+    *Nx = Eigen::MatrixXf::Zero(1, 2);
+    *Nx << 0, 1;
+    std::unique_ptr <Eigen::MatrixXf> Nu = std::make_unique<Eigen::MatrixXf>();
+    *Nu = Eigen::MatrixXf::Zero(1, 2);
+    *Nu << 1, 0;
+    std::unique_ptr <Eigen::MatrixXf> Nn = std::make_unique<Eigen::MatrixXf>();
+    *Nn = Eigen::MatrixXf::Zero(1, 2);
+    *Nn << 0, 1;
+    std::unique_ptr <Eigen::MatrixXf> No = std::make_unique<Eigen::MatrixXf>();
+    *No = Eigen::MatrixXf::Zero(1, 2);
+    *No << 0, 1;
+    std::unique_ptr<std::vector<NonLinearEquationBase>> nonLinearComponents = std::make_unique<std::vector<NonLinearEquationBase>>();
+    nonLinearComponents->push_back(DiodeNLEQ());
+
+    CircuitBase rcDiodeClipper(
+        std::move(resistors), std::move(capacitors), 9, std::move(NR), 
+        std::move(Nv), std::move(Nx), std::move(Nu), std::move(Nn), 
+        std::move(No), std::move(nonLinearComponents), 1);
 
     float fs_test = 44100.0f;
     float fc_test = 400.0f;
+
+    rcDiodeClipper.prepare(fs_test);
+
     //test first 100 samples of sin
     for (int i = 0; i < 100; i++)
     {
-        float vin = std::sinf(2 * M_PI * fc_test * i / fs_test);
-        
-        //todo: process
-
+        float vin = std::sinf(2 * M_PI * fc_test * i / fs_test);        
+        rcDiodeClipper.process(&vin, 1);
+        float vo = vin;
+        DBG("vo = " + String(vo));
     }
 }
 

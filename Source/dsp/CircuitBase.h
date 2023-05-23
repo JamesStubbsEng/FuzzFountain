@@ -10,7 +10,9 @@
 
 #pragma once
  
-#include <Eigen/core>
+//#include <Eigen/core>
+//#include <Eigen/LU>
+#include <Eigen/Dense>
 #include "NonLinearEquationBase.h"
 #include "DampedNewtonRaphson.h"
 
@@ -28,7 +30,7 @@ public:
         std::unique_ptr <Eigen::MatrixXd> Nu,
         std::unique_ptr <Eigen::MatrixXd> Nn,
         std::unique_ptr <Eigen::MatrixXd> No,
-        std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents,
+        std::unique_ptr<std::vector<NonLinearEquationBase>> nonLinearComponents,
         int numNonlinears);
     void prepare(float sampleRate);
     void process(float* block, const int numSamples) noexcept;
@@ -42,7 +44,7 @@ protected:
 
     float Vcc = 9.0f;
     int numNonlinears = 1;
-    std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents;
+    std::unique_ptr<std::vector<NonLinearEquationBase>> nonLinearComponents;
 
     std::unique_ptr <Eigen::MatrixXd> NR;
     std::unique_ptr <Eigen::MatrixXd> Nv;

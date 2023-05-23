@@ -12,7 +12,7 @@
 
 DiodeNLEQ::DiodeNLEQ()
 {
-    numberOfFunctions = 1;
+    this->numberOfFunctions = 1;
 }
 float DiodeNLEQ::calculateCurrents(Eigen::MatrixXd voltages, int vn_index, int function_index)
 {

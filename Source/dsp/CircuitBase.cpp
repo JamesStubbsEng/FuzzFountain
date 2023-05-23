@@ -20,24 +20,27 @@ CircuitBase::CircuitBase(
     std::unique_ptr<Eigen::MatrixXd> Nu,
     std::unique_ptr<Eigen::MatrixXd> Nn,
     std::unique_ptr<Eigen::MatrixXd> No,
-    std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents,
+    std::unique_ptr<std::vector<NonLinearEquationBase>> nonLinearComponents,
     int numNonlinears)
 {
-    resistors = std::move(resistors);
-    capacitors = std::move(capacitors);
-    Vcc = Vcc;
-    NR = std::move(NR);
-    Nv = std::move(Nv);
-    Nx = std::move(Nx);
-    Nu = std::move(Nu);
-    Nn = std::move(Nn);
-    No = std::move(No);
-    numNonlinears = numNonlinears;
-    nonLinearComponents = std::move(nonLinearComponents);
+    this->resistors = std::move(resistors);
+    this->capacitors = std::move(capacitors);
+    this->Vcc = Vcc;
+    this->NR = std::move(NR);
+    this->Nv = std::move(Nv);
+    this->Nx = std::move(Nx);
+    this->Nu = std::move(Nu);
+    this->Nn = std::move(Nn);
+    this->No = std::move(No);
+    this->numNonlinears = numNonlinears;
+    this->nonLinearComponents = std::move(nonLinearComponents);
 }
 
 void CircuitBase::prepare(float sampleRate)
 {
+    //for testing
+    std::ostringstream outStream;
+
     fs = sampleRate;
     
     GR = Eigen::MatrixXd::Zero(resistors->size(), resistors->size());
@@ -57,23 +60,21 @@ void CircuitBase::prepare(float sampleRate)
     S22 = Eigen::MatrixXd::Zero(Nu->rows(), Nu->rows());
 
     //TODO: verify this with print outs. No idea if the topLeft... syntax is correct
-    S = Eigen::MatrixXd::Zero(S11.rows() + S12.rows(), S11.cols() + S21.cols());
+    S = Eigen::MatrixXd::Zero(S11.rows() + S21.rows(), S11.cols() + S12.cols());
     S.topLeftCorner(S11.rows(), S11.cols()) = S11;
     S.topRightCorner(S12.rows(), S12.cols()) = S12;
     S.bottomLeftCorner(S21.rows(), S21.cols()) = S21;
     S.bottomRightCorner(S22.rows(), S22.cols()) = S22;
 
-    Si = S.inverse();
-
-    Nrp = Eigen::MatrixXd::Zero(2 * NR->rows(), NR->cols());
+    Nrp = Eigen::MatrixXd::Zero(NR->rows(), NR->cols() + Nu->rows());
     Nrp.topLeftCorner(NR->rows(), NR->cols()) = (*NR);
-    Nxp = Eigen::MatrixXd::Zero(2 * Nx->rows(), Nx->cols());
+    Nxp = Eigen::MatrixXd::Zero(Nx->rows(), Nx->cols() + Nu->rows());
     Nxp.topLeftCorner(Nx->rows(), Nx->cols()) = (*Nx);
-    Nnp = Eigen::MatrixXd::Zero(2 * Nn->rows(), Nn->cols());
+    Nnp = Eigen::MatrixXd::Zero(Nn->rows(), Nn->cols() + Nu->rows());
     Nnp.topLeftCorner(Nn->rows(), Nn->cols()) = (*Nn);
-    Nop = Eigen::MatrixXd::Zero(2 * No->rows(), No->cols());
+    Nop = Eigen::MatrixXd::Zero(No->rows(), No->cols() + Nu->rows());
     Nop.topLeftCorner(No->rows(), No->cols()) = (*No);
-    Nup = Eigen::MatrixXd::Zero(2 * Nu->rows(), Nu->cols());
+    Nup = Eigen::MatrixXd::Zero(Nu->rows(), Nu->cols() + Nu->rows());
     Nup.topLeftCorner(Nu->rows(), Nu->cols()) = (*Nu);
     // padded identity matrix. 
     Nup2 = Eigen::MatrixXd::Zero(Nu->rows(), Nu->cols() + Nu->rows());
@@ -84,15 +85,29 @@ void CircuitBase::prepare(float sampleRate)
     for (int i = 0; i < capacitors->size(); i++)
         Z(i, i) = 1;
 
-    A = 2 * Z * Gx * Nxp * Si * Nxp.transpose() - Z;
-    B = 2 * Z * Gx * Nxp * Si * Nup2;
-    C = 2 * Z * Gx * Nxp * Si * Nnp.transpose();
-    D = Nop * Si * Nxp.transpose();
-    E = Nop * Si * Nup2;
-    F = Nop * Si * Nnp.transpose();
-    G = Nnp * Si * Nxp.transpose();
-    H = Nnp * Si * Nup2;
-    K = Nnp * Si * Nnp.transpose();
+    outStream << "Z: " << std::endl;
+    outStream << Z << std::endl;
+    outStream << "Gx: " << std::endl;
+    outStream << Gx << std::endl;
+    //outStream << "S.inverse(): " << std::endl;
+    //outStream << S.inverse() << std::endl;
+    outStream << "Nxp: " << std::endl;
+    outStream << Nxp << std::endl;
+    outStream << "Nx: " << std::endl;
+    outStream << *Nx << std::endl;
+    outStream << "S: " << std::endl;
+    outStream << S << std::endl;
+    DBG(outStream.str());
+
+    A = 2 * Z * Gx * Nxp * S.inverse() * Nxp.transpose() - Z;
+    B = 2 * Z * Gx * Nxp * S.inverse() * Nup2;
+    C = 2 * Z * Gx * Nxp * S.inverse() * Nnp.transpose();
+    D = Nop * S.inverse() * Nxp.transpose();
+    E = Nop * S.inverse() * Nup2;
+    F = Nop * S.inverse() * Nnp.transpose();
+    G = Nnp * S.inverse() * Nxp.transpose();
+    H = Nnp * S.inverse() * Nup2;
+    K = Nnp * S.inverse() * Nnp.transpose();
 
     vn = Eigen::MatrixXd::Zero(Nn->rows(), 1);
     in = Eigen::MatrixXd::Zero(Nn->rows(), 1);
