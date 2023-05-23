@@ -16,21 +16,21 @@
 class DampedNewtonRaphson
 {
 public:
-    DampedNewtonRaphson(int numNonlinears, Eigen::MatrixXf* K,
+    DampedNewtonRaphson(int numNonlinears, Eigen::MatrixXd* K,
         std::vector<NonLinearEquationBase*>* nonLinearComponents);
-    void solve(Eigen::MatrixXf* vn, Eigen::MatrixXf* in, Eigen::MatrixXf* p);
+    void solve(Eigen::MatrixXd* vn, Eigen::MatrixXd* in, Eigen::MatrixXd* p);
 
-    void getCurrents(Eigen::MatrixXf* vn, Eigen::MatrixXf* in);
+    void getCurrents(Eigen::MatrixXd* vn, Eigen::MatrixXd* in);
 private:
-    Eigen::MatrixXf eye;
-    Eigen::MatrixXf J;
-    Eigen::MatrixXf step;
-    Eigen::MatrixXf F;
-    Eigen::MatrixXf F_new;
-    Eigen::MatrixXf componentsJacobian;
-    Eigen::MatrixXf vn_new;
-    Eigen::MatrixXf in_new;
-    Eigen::MatrixXf* K;
+    Eigen::MatrixXd eye;
+    Eigen::MatrixXd J;
+    Eigen::MatrixXd step;
+    Eigen::MatrixXd F;
+    Eigen::MatrixXd F_new;
+    Eigen::MatrixXd componentsJacobian;
+    Eigen::MatrixXd vn_new;
+    Eigen::MatrixXd in_new;
+    Eigen::MatrixXd* K;
     std::vector<NonLinearEquationBase*>* nonLinearComponents;
     int numComponents;
     int vn_index = 0;

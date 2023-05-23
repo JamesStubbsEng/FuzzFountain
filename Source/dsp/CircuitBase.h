@@ -22,12 +22,12 @@ public:
         std::unique_ptr<std::vector<float>> resistors,
         std::unique_ptr<std::vector<float>> capacitors,
         float Vcc,
-        std::unique_ptr <Eigen::MatrixXf> NR,
-        std::unique_ptr <Eigen::MatrixXf> Nv,
-        std::unique_ptr <Eigen::MatrixXf> Nx,
-        std::unique_ptr <Eigen::MatrixXf> Nu,
-        std::unique_ptr <Eigen::MatrixXf> Nn,
-        std::unique_ptr <Eigen::MatrixXf> No,
+        std::unique_ptr <Eigen::MatrixXd> NR,
+        std::unique_ptr <Eigen::MatrixXd> Nv,
+        std::unique_ptr <Eigen::MatrixXd> Nx,
+        std::unique_ptr <Eigen::MatrixXd> Nu,
+        std::unique_ptr <Eigen::MatrixXd> Nn,
+        std::unique_ptr <Eigen::MatrixXd> No,
         std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents,
         int numNonlinears);
     void prepare(float sampleRate);
@@ -44,49 +44,49 @@ protected:
     int numNonlinears = 1;
     std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents;
 
-    std::unique_ptr <Eigen::MatrixXf> NR;
-    std::unique_ptr <Eigen::MatrixXf> Nv;
-    std::unique_ptr <Eigen::MatrixXf> Nx;
-    std::unique_ptr <Eigen::MatrixXf> Nu;
-    std::unique_ptr <Eigen::MatrixXf> Nn;
-    std::unique_ptr <Eigen::MatrixXf> No;
+    std::unique_ptr <Eigen::MatrixXd> NR;
+    std::unique_ptr <Eigen::MatrixXd> Nv;
+    std::unique_ptr <Eigen::MatrixXd> Nx;
+    std::unique_ptr <Eigen::MatrixXd> Nu;
+    std::unique_ptr <Eigen::MatrixXd> Nn;
+    std::unique_ptr <Eigen::MatrixXd> No;
 
     //generated from user input
-    Eigen::MatrixXf GR;
-    Eigen::MatrixXf Rv;
-    Eigen::MatrixXf Gx;
+    Eigen::MatrixXd GR;
+    Eigen::MatrixXd Rv;
+    Eigen::MatrixXd Gx;
 
-    Eigen::MatrixXf Z;
+    Eigen::MatrixXd Z;
 
     //intermediates used in process function
-    Eigen::MatrixXf S11;
-    Eigen::MatrixXf S12;
-    Eigen::MatrixXf S21;
-    Eigen::MatrixXf S22;
+    Eigen::MatrixXd S11;
+    Eigen::MatrixXd S12;
+    Eigen::MatrixXd S21;
+    Eigen::MatrixXd S22;
 
-    Eigen::MatrixXf S;
-    Eigen::MatrixXf Si;
+    Eigen::MatrixXd S;
+    Eigen::MatrixXd Si;
 
-    Eigen::MatrixXf Nrp;
-    Eigen::MatrixXf Nxp;
-    Eigen::MatrixXf Nnp;
-    Eigen::MatrixXf Nop;
-    Eigen::MatrixXf Nup;
-    Eigen::MatrixXf Nup2;
+    Eigen::MatrixXd Nrp;
+    Eigen::MatrixXd Nxp;
+    Eigen::MatrixXd Nnp;
+    Eigen::MatrixXd Nop;
+    Eigen::MatrixXd Nup;
+    Eigen::MatrixXd Nup2;
 
-    Eigen::MatrixXf A;
-    Eigen::MatrixXf B;
-    Eigen::MatrixXf C;
-    Eigen::MatrixXf D;
-    Eigen::MatrixXf E;
-    Eigen::MatrixXf F;
-    Eigen::MatrixXf G;
-    Eigen::MatrixXf H;
-    Eigen::MatrixXf K;
+    Eigen::MatrixXd A;
+    Eigen::MatrixXd B;
+    Eigen::MatrixXd C;
+    Eigen::MatrixXd D;
+    Eigen::MatrixXd E;
+    Eigen::MatrixXd F;
+    Eigen::MatrixXd G;
+    Eigen::MatrixXd H;
+    Eigen::MatrixXd K;
 
-    Eigen::MatrixXf p;
-    Eigen::MatrixXf x;
-    Eigen::MatrixXf u;
-    Eigen::MatrixXf vn;
-    Eigen::MatrixXf in;
+    Eigen::MatrixXd p;
+    Eigen::MatrixXd x;
+    Eigen::MatrixXd u;
+    Eigen::MatrixXd vn;
+    Eigen::MatrixXd in;
 };

@@ -10,7 +10,7 @@
 
 #include "DampedNewtonRaphson.h"
 
-DampedNewtonRaphson::DampedNewtonRaphson(int numberOfNonLinearFunctions, Eigen::MatrixXf* K, std::vector<NonLinearEquationBase*>* nonLinearComponents)
+DampedNewtonRaphson::DampedNewtonRaphson(int numberOfNonLinearFunctions, Eigen::MatrixXd* K, std::vector<NonLinearEquationBase*>* nonLinearComponents)
 {
     //pass parameters to members
     numberOfNonLinearFunctions = numberOfNonLinearFunctions;
@@ -19,18 +19,18 @@ DampedNewtonRaphson::DampedNewtonRaphson(int numberOfNonLinearFunctions, Eigen::
     numComponents = nonLinearComponents->size();
 
     //initialize member matrices with zeros
-    vn_new = Eigen::MatrixXf::Zero(numberOfNonLinearFunctions, 1);
-    in_new = Eigen::MatrixXf::Zero(numberOfNonLinearFunctions, 1);
-    eye = Eigen::MatrixXf::Identity(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
-    componentsJacobian = Eigen::MatrixXf::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
-    J = Eigen::MatrixXf::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
-    F = Eigen::MatrixXf::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
-    F_new = Eigen::MatrixXf::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
+    vn_new = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, 1);
+    in_new = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, 1);
+    eye = Eigen::MatrixXd::Identity(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
+    componentsJacobian = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
+    J = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
+    F = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
+    F_new = Eigen::MatrixXd::Zero(numberOfNonLinearFunctions, numberOfNonLinearFunctions);
 }
 
-void DampedNewtonRaphson::solve(Eigen::MatrixXf* vn, Eigen::MatrixXf* in, Eigen::MatrixXf* p)
+void DampedNewtonRaphson::solve(Eigen::MatrixXd* vn, Eigen::MatrixXd* in, Eigen::MatrixXd* p)
 {
-    step = Eigen::MatrixXf::Ones(numberOfNonLinearFunctions, 1);
+    step = Eigen::MatrixXd::Ones(numberOfNonLinearFunctions, 1);
     iter = 0;
 
     //get first in
@@ -67,7 +67,7 @@ void DampedNewtonRaphson::solve(Eigen::MatrixXf* vn, Eigen::MatrixXf* in, Eigen:
     jassert(iter < 100);
 }
 
-void DampedNewtonRaphson::getCurrents(Eigen::MatrixXf* vn, Eigen::MatrixXf* in)
+void DampedNewtonRaphson::getCurrents(Eigen::MatrixXd* vn, Eigen::MatrixXd* in)
 {
     vn_index = 0;
     for (int componentIndex = 0; componentIndex < numComponents; componentIndex++)

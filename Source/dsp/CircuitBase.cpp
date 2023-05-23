@@ -14,12 +14,12 @@ CircuitBase::CircuitBase(
     std::unique_ptr<std::vector<float>> resistors,
     std::unique_ptr<std::vector<float>> capacitors,
     float Vcc,
-    std::unique_ptr<Eigen::MatrixXf> NR,
-    std::unique_ptr<Eigen::MatrixXf> Nv,
-    std::unique_ptr<Eigen::MatrixXf> Nx,
-    std::unique_ptr<Eigen::MatrixXf> Nu,
-    std::unique_ptr<Eigen::MatrixXf> Nn,
-    std::unique_ptr<Eigen::MatrixXf> No,
+    std::unique_ptr<Eigen::MatrixXd> NR,
+    std::unique_ptr<Eigen::MatrixXd> Nv,
+    std::unique_ptr<Eigen::MatrixXd> Nx,
+    std::unique_ptr<Eigen::MatrixXd> Nu,
+    std::unique_ptr<Eigen::MatrixXd> Nn,
+    std::unique_ptr<Eigen::MatrixXd> No,
     std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents,
     int numNonlinears)
 {
@@ -40,24 +40,24 @@ void CircuitBase::prepare(float sampleRate)
 {
     fs = sampleRate;
     
-    GR = Eigen::MatrixXf::Zero(resistors->size(), resistors->size());
+    GR = Eigen::MatrixXd::Zero(resistors->size(), resistors->size());
     for (int i = 0; i < resistors->size(); i++)
         GR(i, i) = 1 / (*resistors)[i];
 
     //no variable resistors yet
-    Rv = Eigen::MatrixXf::Zero(1, 1);
+    Rv = Eigen::MatrixXd::Zero(1, 1);
 
-    Gx = Eigen::MatrixXf::Zero(capacitors->size(), capacitors->size());
+    Gx = Eigen::MatrixXd::Zero(capacitors->size(), capacitors->size());
     for (int i = 0; i < capacitors->size(); i++)
         Gx(i, i) = 2 * fs * (*capacitors)[i];
 
     S11 = NR->transpose() * GR * (*NR) + Nx->transpose() * Gx * (*Nx);
     S12 = Nu->transpose();
     S21 = *Nu;
-    S22 = Eigen::MatrixXf::Zero(Nu->rows(), Nu->rows());
+    S22 = Eigen::MatrixXd::Zero(Nu->rows(), Nu->rows());
 
     //TODO: verify this with print outs. No idea if the topLeft... syntax is correct
-    S = Eigen::MatrixXf::Zero(S11.rows() + S12.rows(), S11.cols() + S21.cols());
+    S = Eigen::MatrixXd::Zero(S11.rows() + S12.rows(), S11.cols() + S21.cols());
     S.topLeftCorner(S11.rows(), S11.cols()) = S11;
     S.topRightCorner(S12.rows(), S12.cols()) = S12;
     S.bottomLeftCorner(S21.rows(), S21.cols()) = S21;
@@ -65,22 +65,22 @@ void CircuitBase::prepare(float sampleRate)
 
     Si = S.inverse();
 
-    Nrp = Eigen::MatrixXf::Zero(2 * NR->rows(), NR->cols());
+    Nrp = Eigen::MatrixXd::Zero(2 * NR->rows(), NR->cols());
     Nrp.topLeftCorner(NR->rows(), NR->cols()) = (*NR);
-    Nxp = Eigen::MatrixXf::Zero(2 * Nx->rows(), Nx->cols());
+    Nxp = Eigen::MatrixXd::Zero(2 * Nx->rows(), Nx->cols());
     Nxp.topLeftCorner(Nx->rows(), Nx->cols()) = (*Nx);
-    Nnp = Eigen::MatrixXf::Zero(2 * Nn->rows(), Nn->cols());
+    Nnp = Eigen::MatrixXd::Zero(2 * Nn->rows(), Nn->cols());
     Nnp.topLeftCorner(Nn->rows(), Nn->cols()) = (*Nn);
-    Nop = Eigen::MatrixXf::Zero(2 * No->rows(), No->cols());
+    Nop = Eigen::MatrixXd::Zero(2 * No->rows(), No->cols());
     Nop.topLeftCorner(No->rows(), No->cols()) = (*No);
-    Nup = Eigen::MatrixXf::Zero(2 * Nu->rows(), Nu->cols());
+    Nup = Eigen::MatrixXd::Zero(2 * Nu->rows(), Nu->cols());
     Nup.topLeftCorner(Nu->rows(), Nu->cols()) = (*Nu);
     // padded identity matrix. 
-    Nup2 = Eigen::MatrixXf::Zero(Nu->rows(), Nu->cols() + Nu->rows());
-    Nup2.bottomLeftCorner(Nu->rows(), Nu->rows()) = Eigen::MatrixXf::Identity(Nu->rows(), Nu->rows());
+    Nup2 = Eigen::MatrixXd::Zero(Nu->rows(), Nu->cols() + Nu->rows());
+    Nup2.bottomLeftCorner(Nu->rows(), Nu->rows()) = Eigen::MatrixXd::Identity(Nu->rows(), Nu->rows());
 
     //there are only capacitors, so fill the diagonal matrix Z with 1s
-    Z = Eigen::MatrixXf::Zero(capacitors->size(), capacitors->size());
+    Z = Eigen::MatrixXd::Zero(capacitors->size(), capacitors->size());
     for (int i = 0; i < capacitors->size(); i++)
         Z(i, i) = 1;
 
@@ -94,14 +94,14 @@ void CircuitBase::prepare(float sampleRate)
     H = Nnp * Si * Nup2;
     K = Nnp * Si * Nnp.transpose();
 
-    vn = Eigen::MatrixXf::Zero(Nn->rows(), 1);
-    in = Eigen::MatrixXf::Zero(Nn->rows(), 1);
-    x = Eigen::MatrixXf::Zero(Nx->rows(), 1);
+    vn = Eigen::MatrixXd::Zero(Nn->rows(), 1);
+    in = Eigen::MatrixXd::Zero(Nn->rows(), 1);
+    x = Eigen::MatrixXd::Zero(Nx->rows(), 1);
 
     //use is a column vector of vi and vcc
-    u = Eigen::MatrixXf::Zero(2, 1);
+    u = Eigen::MatrixXd::Zero(2, 1);
     u(1, 0) = Vcc;
-    p = Eigen::MatrixXf::Zero(G.rows(), x.cols());
+    p = Eigen::MatrixXd::Zero(G.rows(), x.cols());
 
     dnr = std::make_unique<DampedNewtonRaphson>(DampedNewtonRaphson(numNonlinears, &K, nonLinearComponents.get()));
 }
