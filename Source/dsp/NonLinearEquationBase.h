@@ -10,14 +10,14 @@
 
 #pragma once
 
-#include <Eigen/Core>
+#include <Eigen/Dense>
 
 class NonLinearEquationBase
 {
 public:
 
     virtual ~NonLinearEquationBase() = default;
-    virtual float calculateCurrents(Eigen::MatrixXd voltages, int vn_index, int function_index) { return -1.0f; }
+    virtual float calculateCurrents(Eigen::MatrixXd voltages, int vn_index, int function_index) { return -666.0f; }
     virtual void calculateJacobian(Eigen::MatrixXd* jacobian, Eigen::MatrixXd voltages, int vn_index) {}
     int getNumberOfFunctions() { return numberOfFunctions; };
 protected:

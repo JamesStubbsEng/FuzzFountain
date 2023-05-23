@@ -40,31 +40,31 @@ FuzzFountainAudioProcessor::FuzzFountainAudioProcessor()
     std::unique_ptr<std::vector<float>> capacitors = std::make_unique<std::vector<float>>();
     capacitors->push_back(80e-12);
 
-    std::unique_ptr <Eigen::MatrixXf> NR = std::make_unique<Eigen::MatrixXf>();
-    *NR = Eigen::MatrixXf::Zero(1, 2);
+    std::unique_ptr <Eigen::MatrixXd> NR = std::make_unique<Eigen::MatrixXd>();
+    *NR = Eigen::MatrixXd::Zero(1, 2);
     *NR << 1, -1;
-    std::unique_ptr <Eigen::MatrixXf> Nv = std::make_unique<Eigen::MatrixXf>();
-    *Nv = Eigen::MatrixXf::Zero(1, 1);
+    std::unique_ptr <Eigen::MatrixXd> Nv = std::make_unique<Eigen::MatrixXd>();
+    *Nv = Eigen::MatrixXd::Zero(1, 1);
     *Nv << 0;
-    std::unique_ptr <Eigen::MatrixXf> Nx = std::make_unique<Eigen::MatrixXf>();
-    *Nx = Eigen::MatrixXf::Zero(1, 2);
+    std::unique_ptr <Eigen::MatrixXd> Nx = std::make_unique<Eigen::MatrixXd>();
+    *Nx = Eigen::MatrixXd::Zero(1, 2);
     *Nx << 0, 1;
-    std::unique_ptr <Eigen::MatrixXf> Nu = std::make_unique<Eigen::MatrixXf>();
-    *Nu = Eigen::MatrixXf::Zero(1, 2);
+    std::unique_ptr <Eigen::MatrixXd> Nu = std::make_unique<Eigen::MatrixXd>();
+    *Nu = Eigen::MatrixXd::Zero(1, 2);
     *Nu << 1, 0;
-    std::unique_ptr <Eigen::MatrixXf> Nn = std::make_unique<Eigen::MatrixXf>();
-    *Nn = Eigen::MatrixXf::Zero(1, 2);
+    std::unique_ptr <Eigen::MatrixXd> Nn = std::make_unique<Eigen::MatrixXd>();
+    *Nn = Eigen::MatrixXd::Zero(1, 2);
     *Nn << 0, 1;
-    std::unique_ptr <Eigen::MatrixXf> No = std::make_unique<Eigen::MatrixXf>();
-    *No = Eigen::MatrixXf::Zero(1, 2);
+    std::unique_ptr <Eigen::MatrixXd> No = std::make_unique<Eigen::MatrixXd>();
+    *No = Eigen::MatrixXd::Zero(1, 2);
     *No << 0, 1;
-    std::unique_ptr<std::vector<NonLinearEquationBase>> nonLinearComponents = std::make_unique<std::vector<NonLinearEquationBase>>();
-    nonLinearComponents->push_back(DiodeNLEQ());
+    std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents = std::make_unique<std::vector<NonLinearEquationBase*>>();
+    nonLinearComponents->push_back(new DiodeNLEQ());
 
     CircuitBase rcDiodeClipper(
         std::move(resistors), std::move(capacitors), 9, std::move(NR), 
         std::move(Nv), std::move(Nx), std::move(Nu), std::move(Nn), 
-        std::move(No), std::move(nonLinearComponents), 1);
+        std::move(No), std::move(nonLinearComponents), 1, false);
 
     float fs_test = 44100.0f;
     float fc_test = 400.0f;

@@ -30,8 +30,10 @@ public:
         std::unique_ptr <Eigen::MatrixXd> Nu,
         std::unique_ptr <Eigen::MatrixXd> Nn,
         std::unique_ptr <Eigen::MatrixXd> No,
-        std::unique_ptr<std::vector<NonLinearEquationBase>> nonLinearComponents,
-        int numNonlinears);
+        std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents,
+        int numNonlinears,
+        bool hasVcc = true);
+    ~CircuitBase();
     void prepare(float sampleRate);
     void process(float* block, const int numSamples) noexcept;
 protected:
@@ -43,8 +45,9 @@ protected:
     std::unique_ptr<std::vector<float>> capacitors;
 
     float Vcc = 9.0f;
+    bool hasVcc = true;
     int numNonlinears = 1;
-    std::unique_ptr<std::vector<NonLinearEquationBase>> nonLinearComponents;
+    std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents;
 
     std::unique_ptr <Eigen::MatrixXd> NR;
     std::unique_ptr <Eigen::MatrixXd> Nv;

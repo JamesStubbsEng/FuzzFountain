@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include <Eigen/Core>
+#include <Eigen/Dense>
 #include "dsp/CircuitBase.h"
 #include "dsp/DiodeNLEQ.h"
 
