@@ -61,24 +61,24 @@ FuzzFountainAudioProcessor::FuzzFountainAudioProcessor()
     std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents = std::make_unique<std::vector<NonLinearEquationBase*>>();
     nonLinearComponents->push_back(new DiodeNLEQ());
 
-    CircuitBase rcDiodeClipper(
-        std::move(resistors), std::move(capacitors), 9, std::move(NR), 
-        std::move(Nv), std::move(Nx), std::move(Nu), std::move(Nn), 
+    rcDiodeClipper = std::make_unique<CircuitBase>(std::move(resistors), std::move(capacitors), 9, std::move(NR),
+        std::move(Nv), std::move(Nx), std::move(Nu), std::move(Nn),
         std::move(No), std::move(nonLinearComponents), 1, false);
 
-    double fs_test = 44100.0;
-    double fc_test = 400.0;
+    float fs_test = 44100.0;
+    float fc_test = 400.0;
 
-    rcDiodeClipper.prepare(fs_test);
+    rcDiodeClipper->prepare(fs_test);
 
     //test first 100 samples of sin
     for (int i = 0; i < 100; i++)
     {
-        double vin = std::sin(2 * M_PI * fc_test * i / fs_test);
+        //vou should be soft clipped at about +-0.5;
+        float vin = std::sinf(2 * M_PI * fc_test * i / fs_test);
         //DBG("vin = " + String(vin));
-        rcDiodeClipper.process(&vin, 1);
-        double vo = vin;
-        DBG("vo = " + String(vo));
+        rcDiodeClipper->process(&vin, 1);
+        float vo = vin;
+        DBG("sample: " + String(i) + " vo = " + String(vo));
     }
 }
 
@@ -165,6 +165,7 @@ void FuzzFountainAudioProcessor::prepareToPlay (double sampleRate, int samplesPe
     oversampling.initProcessing(samplesPerBlock);
 
     parallelBuffer.setSize(getTotalNumOutputChannels(), samplesPerBlock);
+    rcDiodeClipper->prepare(sampleRate);
 }
 
 void FuzzFountainAudioProcessor::releaseResources()
@@ -173,6 +174,7 @@ void FuzzFountainAudioProcessor::releaseResources()
     inputGain.reset();
     outputGain.reset();
     oversampling.reset();
+    rcDiodeClipper->reset();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -220,6 +222,11 @@ void FuzzFountainAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 
     parallelBuffer.makeCopyOf(buffer, true);
     dsp::AudioBlock<float> parallelBlock(parallelBuffer);
+
+    //------Non linear dsp start--------
+    //for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+    //    rcDiodeClipper->process(buffer.getWritePointer(ch), buffer.getNumSamples());
+    //------Non linear dsp end--------
 
     //------start of di parallel processing---------
     dryWetMixer.setWetMixProportion(jmap((float)*mixParameter, 0.0f, 10.0f, 0.0f, 1.0f));

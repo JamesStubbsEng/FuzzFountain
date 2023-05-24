@@ -13,7 +13,7 @@
 DampedNewtonRaphson::DampedNewtonRaphson(int numberOfNonLinearFunctions, Eigen::MatrixXd* K, std::vector<NonLinearEquationBase*>* nonLinearComponents)
 {
     //pass parameters to members
-    numberOfNonLinearFunctions = numberOfNonLinearFunctions;
+    this->numberOfNonLinearFunctions = numberOfNonLinearFunctions;
     this->K = K;
     this->nonLinearComponents = nonLinearComponents;
     this->numComponents = nonLinearComponents->size();
@@ -30,44 +30,29 @@ DampedNewtonRaphson::DampedNewtonRaphson(int numberOfNonLinearFunctions, Eigen::
 
 void DampedNewtonRaphson::solve(Eigen::MatrixXd* vn, Eigen::MatrixXd* in, Eigen::MatrixXd* p)
 {
-    std::ostringstream outStream;
-
     step = Eigen::MatrixXd::Ones(numberOfNonLinearFunctions, 1);
     iter = 0;
+    b = 1;
 
-    outStream << "in: " << std::endl;
-    outStream << *in << std::endl;
+    //-------------dampedNR start ------------------
     //get first in
     getCurrents(vn, in);
 
     // get first F
     F = *p + (*K) * (*in) - (*vn);
-
-    outStream << "vn: " << std::endl;
-    outStream << *vn << std::endl;
-    outStream << "in: " << std::endl;
-    outStream << *in << std::endl;
-    outStream << "p: " << std::endl;
-    outStream << *p << std::endl;
-    outStream << "K: " << std::endl;
-    outStream << *K << std::endl;
-    outStream << "F: " << std::endl;
-    outStream << F << std::endl;
     
-
     //iterate to solve system of non linear equations
     while (step.norm() > tol && iter < maxIterations)
     {
         getCurrents(vn, in);
-        J = (*K) * componentsJacobian - eye;
+        J.noalias() = (*K) * componentsJacobian - eye;
 
-        step.noalias() = J.inverse() * F;
+        //step.noalias() = J.inverse() * F;
+        step.noalias() = J.colPivHouseholderQr().solve(F);
         vn_new = (*vn) - b * step;
         getCurrents(&vn_new, &in_new);
 
         F_new = *p + (*K) * in_new - vn_new;
-        outStream << "F_new: " << std::endl;
-        outStream << F_new << std::endl;
         if (F_new.norm() < F.norm())
         {
             F = F_new;
@@ -79,9 +64,26 @@ void DampedNewtonRaphson::solve(Eigen::MatrixXd* vn, Eigen::MatrixXd* in, Eigen:
             b /= 2;
         }
         iter += 1;
-
-        //DBG(outStream.str());
     }
+
+    //-------------dampedNR end ------------------
+    //-------------non damped NR start ------------------
+    //while (step.norm() > tol && iter < maxIterations)
+    //{
+    //    getCurrents(vn, in);
+    //    J.noalias() = (*K) * componentsJacobian - eye;
+    //    step.noalias() = J.colPivHouseholderQr().solve(F);
+
+    //    J.noalias() = (*K) * componentsJacobian;
+    //    J -= eye;
+    //    F.noalias() = (*K) * (*in);
+    //    F += (*p);
+    //    F -= (*vn);
+    //    step.noalias() = J.inverse() * F;
+    //    (*vn) -= step;
+    //    iter++;
+    //}
+    //-------------non damped NR end ------------------
 
     //No convergence if this asserts!
     jassert(iter < 100);

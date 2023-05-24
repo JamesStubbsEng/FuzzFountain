@@ -34,8 +34,9 @@ public:
         int numNonlinears,
         bool hasVcc = true);
     ~CircuitBase();
-    void prepare(double sampleRate);
-    void process(double* block, const int numSamples) noexcept;
+    void prepare(float sampleRate);
+    void process(float* block, const int numSamples) noexcept;
+    void reset();
 protected:
     float fs = 44100.0f;
     std::unique_ptr <DampedNewtonRaphson> dnr;
@@ -44,7 +45,7 @@ protected:
     std::unique_ptr<std::vector<float>> resistors;
     std::unique_ptr<std::vector<float>> capacitors;
 
-    double Vcc = 9.0f;
+    float Vcc = 9.0f;
     bool hasVcc = true;
     int numNonlinears = 1;
     std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents;
@@ -94,4 +95,5 @@ protected:
     Eigen::MatrixXd u;
     Eigen::MatrixXd vn;
     Eigen::MatrixXd in;
+    Eigen::MatrixXd vo;
 };

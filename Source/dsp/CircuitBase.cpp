@@ -45,7 +45,7 @@ CircuitBase::~CircuitBase()
         delete component;
 }
 
-void CircuitBase::prepare(double sampleRate)
+void CircuitBase::prepare(float sampleRate)
 {
     //for testing
     std::ostringstream outStream;
@@ -159,42 +159,54 @@ void CircuitBase::prepare(double sampleRate)
     dnr = std::make_unique<DampedNewtonRaphson>(DampedNewtonRaphson(numNonlinears, &K, nonLinearComponents.get()));
 }
 
-void CircuitBase::process(double* block, const int numSamples) noexcept
+void CircuitBase::process(float* block, const int numSamples) noexcept
 {
-    std::ostringstream outStream;
+    //std::ostringstream outStream;
     for (int i = 0; i < numSamples; i++)
     {
         u(0, 0) = block[i];
 
-        outStream << "G: " << std::endl;
-        outStream << G << std::endl;
-        outStream << "x: " << std::endl;
-        outStream << x << std::endl;
-        outStream << "H: " << std::endl;
-        outStream << H << std::endl;
-        outStream << "u: " << std::endl;
-        outStream << u << std::endl;
-        outStream << "C: " << std::endl;
-        outStream << C << std::endl;
+        //outStream << "G: " << std::endl;
+        //outStream << G << std::endl;
+        //outStream << "x: " << std::endl;
+        //outStream << x << std::endl;
+        //outStream << "H: " << std::endl;
+        //outStream << H << std::endl;
+        //outStream << "u: " << std::endl;
+        //outStream << u << std::endl;
+        //outStream << "C: " << std::endl;
+        //outStream << C << std::endl;
         
-        p = G * x + H * u;
+        p.noalias() = G * x;
+        p.noalias() += H * u;
 
-        outStream << "p: " << std::endl;
-        outStream << p << std::endl;
+        //outStream << "p: " << std::endl;
+        //outStream << p << std::endl;
 
         dnr->solve(&vn, &in, &p);
 
-        outStream << "p: " << std::endl;
-        outStream << p << std::endl;
-        outStream << "vn: " << std::endl;
-        outStream << vn << std::endl;
-        outStream << "in: " << std::endl;
-        outStream << in << std::endl;
-        outStream << "x: " << std::endl;
-        outStream << x << std::endl;
+        //outStream << "p: " << std::endl;
+        //outStream << p << std::endl;
+        //outStream << "vn: " << std::endl;
+        //outStream << vn << std::endl;
+        //outStream << "in: " << std::endl;
+        //outStream << in << std::endl;
+        //outStream << "x: " << std::endl;
+        //outStream << x << std::endl;
         //DBG(outStream.str());
 
-        block[i] = (D * x + E * u + F * in)(0,0);
-        x = A * x + B * u + C * in;
+        vo.noalias() = D * x;
+        vo.noalias() += E * u;
+        vo.noalias() += F * in;
+        block[i] = vo(0,0);
+
+        x = A * x;
+        x.noalias() += B * u;
+        x.noalias() += C * in;
     }
+}
+
+void CircuitBase::reset()
+{
+    prepare(fs);
 }

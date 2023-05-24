@@ -74,5 +74,7 @@ private:
 
     AudioBuffer<float> parallelBuffer;
 
+    std::unique_ptr<CircuitBase> rcDiodeClipper;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FuzzFountainAudioProcessor)
 };
