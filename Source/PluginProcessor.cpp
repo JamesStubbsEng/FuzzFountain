@@ -61,9 +61,11 @@ FuzzFountainAudioProcessor::FuzzFountainAudioProcessor()
     std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents = std::make_unique<std::vector<NonLinearEquationBase*>>();
     nonLinearComponents->push_back(new DiodeNLEQ());
 
+    //just have left side for now
     rcDiodeClipper = std::make_unique<CircuitBase>(std::move(resistors), std::move(capacitors), 9, std::move(NR),
         std::move(Nv), std::move(Nx), std::move(Nu), std::move(Nn),
         std::move(No), std::move(nonLinearComponents), 1, false);
+    
 
     //float fs_test = 44100.0;
     //float fc_test = 400.0;
@@ -171,7 +173,9 @@ void FuzzFountainAudioProcessor::prepareToPlay (double sampleRate, int samplesPe
     oversampling.initProcessing(samplesPerBlock);
 
     parallelBuffer.setSize(getTotalNumOutputChannels(), samplesPerBlock);
+
     rcDiodeClipper->prepare((float)sampleRate * std::powf(2.0f, float(oversampleFactor)));
+  
 }
 
 void FuzzFountainAudioProcessor::releaseResources()
@@ -180,6 +184,7 @@ void FuzzFountainAudioProcessor::releaseResources()
     inputGain.reset();
     outputGain.reset();
     oversampling.reset();
+
     rcDiodeClipper->reset();
 }
 
@@ -232,10 +237,7 @@ void FuzzFountainAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     //------Non linear dsp start--------
     auto osBlock = oversampling.processSamplesUp(block);
 
-    for (int ch = 0; ch < osBlock.getNumChannels(); ++ch)
-    {      
-        rcDiodeClipper->process(osBlock.getChannelPointer(ch), osBlock.getNumSamples());
-    }
+    rcDiodeClipper->process(osBlock.getChannelPointer(0), osBlock.getNumSamples());
 
     oversampling.processSamplesDown(block);
         
