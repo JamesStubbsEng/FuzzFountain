@@ -35,9 +35,9 @@ private:
     int numComponents;
     int vn_index = 0;
 
-    float b = 1;
+    double b = 1;
     int iter = 0;
-    float tol = 1e-5;
+    double tol = 1e-5;
     int maxIterations = 100;
 
     int numberOfFunctions;

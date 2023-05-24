@@ -14,7 +14,7 @@ DiodeNLEQ::DiodeNLEQ()
 {
     this->numberOfFunctions = 1;
 }
-float DiodeNLEQ::calculateCurrents(Eigen::MatrixXd voltages, int vn_index, int function_index)
+double DiodeNLEQ::calculateCurrents(Eigen::MatrixXd voltages, int vn_index, int function_index)
 {
     return -2*Is * (std::sinh(voltages(vn_index) / (eta*Vt)));
 }

@@ -80,7 +80,7 @@ void DampedNewtonRaphson::solve(Eigen::MatrixXd* vn, Eigen::MatrixXd* in, Eigen:
         }
         iter += 1;
 
-        DBG(outStream.str());
+        //DBG(outStream.str());
     }
 
     //No convergence if this asserts!

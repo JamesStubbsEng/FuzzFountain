@@ -45,7 +45,7 @@ CircuitBase::~CircuitBase()
         delete component;
 }
 
-void CircuitBase::prepare(float sampleRate)
+void CircuitBase::prepare(double sampleRate)
 {
     //for testing
     std::ostringstream outStream;
@@ -79,11 +79,11 @@ void CircuitBase::prepare(float sampleRate)
     outStream << S << std::endl;
     DBG(outStream.str());
 
-    Eigen::MatrixXd B(5, 5);
-    B = Eigen::MatrixXd::Random(5, 5);
-    outStream << "Here is the matrix B:\n" << B << '\n';
-    outStream << "The determinant of B is:" << B.determinant() << '\n';
-    outStream << "The inverse of B is:\n" << B.inverse() << '\n';
+    Eigen::MatrixXd test(5, 5);
+    test = Eigen::MatrixXd::Random(5, 5);
+    outStream << "Here is the matrix B:\n" << test << '\n';
+    outStream << "The determinant of B is:" << test.determinant() << '\n';
+    outStream << "The inverse of B is:\n" << test.inverse() << '\n';
     DBG(outStream.str());
 
     Si = Eigen::MatrixXd::Zero(S.rows(), S.cols());
@@ -159,7 +159,7 @@ void CircuitBase::prepare(float sampleRate)
     dnr = std::make_unique<DampedNewtonRaphson>(DampedNewtonRaphson(numNonlinears, &K, nonLinearComponents.get()));
 }
 
-void CircuitBase::process(float* block, const int numSamples) noexcept
+void CircuitBase::process(double* block, const int numSamples) noexcept
 {
     std::ostringstream outStream;
     for (int i = 0; i < numSamples; i++)
@@ -174,7 +174,8 @@ void CircuitBase::process(float* block, const int numSamples) noexcept
         outStream << H << std::endl;
         outStream << "u: " << std::endl;
         outStream << u << std::endl;
-        DBG(outStream.str());
+        outStream << "C: " << std::endl;
+        outStream << C << std::endl;
         
         p = G * x + H * u;
 
@@ -189,7 +190,9 @@ void CircuitBase::process(float* block, const int numSamples) noexcept
         outStream << vn << std::endl;
         outStream << "in: " << std::endl;
         outStream << in << std::endl;
-        DBG(outStream.str());
+        outStream << "x: " << std::endl;
+        outStream << x << std::endl;
+        //DBG(outStream.str());
 
         block[i] = (D * x + E * u + F * in)(0,0);
         x = A * x + B * u + C * in;

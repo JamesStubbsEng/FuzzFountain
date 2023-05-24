@@ -66,17 +66,18 @@ FuzzFountainAudioProcessor::FuzzFountainAudioProcessor()
         std::move(Nv), std::move(Nx), std::move(Nu), std::move(Nn), 
         std::move(No), std::move(nonLinearComponents), 1, false);
 
-    float fs_test = 44100.0f;
-    float fc_test = 400.0f;
+    double fs_test = 44100.0;
+    double fc_test = 400.0;
 
     rcDiodeClipper.prepare(fs_test);
 
     //test first 100 samples of sin
     for (int i = 0; i < 100; i++)
     {
-        float vin = std::sinf(2 * M_PI * fc_test * i / fs_test);        
+        double vin = std::sin(2 * M_PI * fc_test * i / fs_test);
+        //DBG("vin = " + String(vin));
         rcDiodeClipper.process(&vin, 1);
-        float vo = vin;
+        double vo = vin;
         DBG("vo = " + String(vo));
     }
 }
