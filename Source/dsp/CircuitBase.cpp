@@ -164,6 +164,7 @@ void CircuitBase::process(float* block, const int numSamples) noexcept
     //std::ostringstream outStream;
     for (int i = 0; i < numSamples; i++)
     {
+        auto start = std::chrono::system_clock::now();
         u(0, 0) = block[i];
 
         //outStream << "G: " << std::endl;
@@ -183,7 +184,18 @@ void CircuitBase::process(float* block, const int numSamples) noexcept
         //outStream << "p: " << std::endl;
         //outStream << p << std::endl;
 
+        auto end = std::chrono::system_clock::now();
+        auto elapsed =
+            std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+        //DBG("Pre DNR: " + String(elapsed.count()) + " ns");
+
+        start = std::chrono::system_clock::now();
         dnr->solve(&vn, &in, &p);
+
+        end = std::chrono::system_clock::now();
+        elapsed =
+            std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+        //DBG("Pre DNR to post DNR: " + String(elapsed.count()) + " ns");
 
         //outStream << "p: " << std::endl;
         //outStream << p << std::endl;
@@ -195,6 +207,8 @@ void CircuitBase::process(float* block, const int numSamples) noexcept
         //outStream << x << std::endl;
         //DBG(outStream.str());
 
+        start = std::chrono::system_clock::now();
+
         vo.noalias() = D * x;
         vo.noalias() += E * u;
         vo.noalias() += F * in;
@@ -203,6 +217,11 @@ void CircuitBase::process(float* block, const int numSamples) noexcept
         x = A * x;
         x.noalias() += B * u;
         x.noalias() += C * in;
+
+        end = std::chrono::system_clock::now();
+        elapsed =
+            std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+        //DBG("post DNR to end of process: " + String(elapsed.count()) + " ns");
     }
 }
 

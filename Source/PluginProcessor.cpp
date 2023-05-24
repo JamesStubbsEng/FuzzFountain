@@ -65,21 +65,27 @@ FuzzFountainAudioProcessor::FuzzFountainAudioProcessor()
         std::move(Nv), std::move(Nx), std::move(Nu), std::move(Nn),
         std::move(No), std::move(nonLinearComponents), 1, false);
 
-    float fs_test = 44100.0;
-    float fc_test = 400.0;
+    //float fs_test = 44100.0;
+    //float fc_test = 400.0;
 
-    rcDiodeClipper->prepare(fs_test);
+    //rcDiodeClipper->prepare(fs_test);
 
-    //test first 100 samples of sin
-    for (int i = 0; i < 100; i++)
-    {
-        //vou should be soft clipped at about +-0.5;
-        float vin = std::sinf(2 * M_PI * fc_test * i / fs_test);
-        //DBG("vin = " + String(vin));
-        rcDiodeClipper->process(&vin, 1);
-        float vo = vin;
-        DBG("sample: " + String(i) + " vo = " + String(vo));
-    }
+    ////test first 10 ms of sin
+    //auto start = std::chrono::system_clock::now();
+    //for (int i = 0; i < 441; i++)
+    //{
+    //    //vou should be soft clipped at about +-0.5;
+    //    float vin = std::sinf(2 * M_PI * fc_test * i / fs_test);
+    //    //DBG("vin = " + String(vin));
+    //    rcDiodeClipper->process(&vin, 1);
+    //    float vo = vin;
+    //    DBG("sample: " + String(i) + " vo = " + String(vo));
+    //}
+
+    //auto end = std::chrono::system_clock::now();
+    //auto elapsed =
+    //    std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    //DBG("Total Time elapsed: " + String(elapsed.count()) + " ms");
 }
 
 FuzzFountainAudioProcessor::~FuzzFountainAudioProcessor()
@@ -165,7 +171,7 @@ void FuzzFountainAudioProcessor::prepareToPlay (double sampleRate, int samplesPe
     oversampling.initProcessing(samplesPerBlock);
 
     parallelBuffer.setSize(getTotalNumOutputChannels(), samplesPerBlock);
-    rcDiodeClipper->prepare(sampleRate);
+    rcDiodeClipper->prepare((float)sampleRate * std::powf(2.0f, float(oversampleFactor)));
 }
 
 void FuzzFountainAudioProcessor::releaseResources()
@@ -224,8 +230,15 @@ void FuzzFountainAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     dsp::AudioBlock<float> parallelBlock(parallelBuffer);
 
     //------Non linear dsp start--------
-    //for (int ch = 0; ch < buffer.getNumChannels(); ch++)
-    //    rcDiodeClipper->process(buffer.getWritePointer(ch), buffer.getNumSamples());
+    auto osBlock = oversampling.processSamplesUp(block);
+
+    for (int ch = 0; ch < osBlock.getNumChannels(); ++ch)
+    {      
+        rcDiodeClipper->process(osBlock.getChannelPointer(ch), osBlock.getNumSamples());
+    }
+
+    oversampling.processSamplesDown(block);
+        
     //------Non linear dsp end--------
 
     //------start of di parallel processing---------

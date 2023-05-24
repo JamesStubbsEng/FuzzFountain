@@ -35,7 +35,7 @@
   <EXPORTFORMATS>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="FuzzFountain"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="FuzzFountain" optimisation="3"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="FuzzFountain"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
