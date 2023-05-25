@@ -15,15 +15,11 @@
 #include "CircuitBase.h"
 #include "DiodeNLEQ.h"
 
-class DiodeClipperCircuit
+class DiodeClipperCircuit : public CircuitBase
 {
 public:
+    /*Fill in circuit details in constructor*/
     DiodeClipperCircuit();
-    void prepare(float sampleRate);
-    void process(float* block, const int numSamples) noexcept;
-    void reset();
 private:
-
-    std::unique_ptr<CircuitBase> rcDiodeClipper;
     std::unique_ptr<DiodeNLEQ> diodeNLEQ;
 };

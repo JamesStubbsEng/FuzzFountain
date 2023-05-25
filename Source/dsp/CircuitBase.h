@@ -20,19 +20,8 @@ class CircuitBase
 {
 public:
     /*Pass in circuit information here. Must call prepare()!!*/
-    CircuitBase(
-        std::unique_ptr<std::vector<float>> resistors,
-        std::unique_ptr<std::vector<float>> capacitors,
-        float Vcc,
-        std::unique_ptr <Eigen::MatrixXd> NR,
-        std::unique_ptr <Eigen::MatrixXd> Nv,
-        std::unique_ptr <Eigen::MatrixXd> Nx,
-        std::unique_ptr <Eigen::MatrixXd> Nu,
-        std::unique_ptr <Eigen::MatrixXd> Nn,
-        std::unique_ptr <Eigen::MatrixXd> No,
-        std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents,
-        int numNonlinears,
-        bool hasVcc = true);
+    CircuitBase() = default;
+    virtual ~CircuitBase() = default;
     void prepare(float sampleRate);
     void process(float* block, const int numSamples) noexcept;
     void reset();
@@ -41,21 +30,21 @@ protected:
     std::unique_ptr <DampedNewtonRaphson> dnr;
 
     //user input
-    std::unique_ptr<std::vector<float>> resistors;
-    std::unique_ptr<std::vector<float>> capacitors;
+    std::vector<float> resistors;
+    std::vector<float> capacitors;
 
     float Vcc = 9.0f;
     bool hasVcc = true;
     int numNonlinears = 1;
-    std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents;
+    std::vector<NonLinearEquationBase*> nonLinearComponents;
 
-    std::unique_ptr <Eigen::MatrixXd> NR;
-    std::unique_ptr <Eigen::MatrixXd> Nv;
-    std::unique_ptr <Eigen::MatrixXd> Nx;
-    std::unique_ptr <Eigen::MatrixXd> Nu;
-    std::unique_ptr <Eigen::MatrixXd> Nn;
-    std::unique_ptr <Eigen::MatrixXd> No;
-
+    Eigen::MatrixXd NR;
+    Eigen::MatrixXd Nv;
+    Eigen::MatrixXd Nx;
+    Eigen::MatrixXd Nu;
+    Eigen::MatrixXd Nn;
+    Eigen::MatrixXd No;
+private:
     //generated from user input
     Eigen::MatrixXd GR;
     Eigen::MatrixXd Rv;
