@@ -38,13 +38,6 @@ CircuitBase::CircuitBase(
     this->nonLinearComponents = std::move(nonLinearComponents);
 }
 
-CircuitBase::~CircuitBase()
-{
-    //TODO: should not be doing this anyways
-    for (auto component : *nonLinearComponents)
-        delete component;
-}
-
 void CircuitBase::prepare(float sampleRate)
 {
     //for testing
@@ -68,7 +61,6 @@ void CircuitBase::prepare(float sampleRate)
     S21 = *Nu;
     S22 = Eigen::MatrixXd::Zero(Nu->rows(), Nu->rows());
 
-    //TODO: verify this with print outs. No idea if the topLeft... syntax is correct
     S = Eigen::MatrixXd::Zero(S11.rows() + S21.rows(), S11.cols() + S12.cols());
     S.topLeftCorner(S11.rows(), S11.cols()) = S11;
     S.topRightCorner(S12.rows(), S12.cols()) = S12;

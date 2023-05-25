@@ -33,7 +33,6 @@ public:
         std::unique_ptr<std::vector<NonLinearEquationBase*>> nonLinearComponents,
         int numNonlinears,
         bool hasVcc = true);
-    ~CircuitBase();
     void prepare(float sampleRate);
     void process(float* block, const int numSamples) noexcept;
     void reset();

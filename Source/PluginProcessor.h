@@ -9,9 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include <Eigen/Dense>
-#include "dsp/CircuitBase.h"
-#include "dsp/DiodeNLEQ.h"
+#include "dsp/DiodeClipperCircuit.h"
 
 //==============================================================================
 /**
@@ -74,7 +72,7 @@ private:
 
     AudioBuffer<float> parallelBuffer;
 
-    std::unique_ptr<CircuitBase> rcDiodeClipper;
+    std::unique_ptr<DiodeClipperCircuit> diodeClipperCircuit[2];
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FuzzFountainAudioProcessor)
 };
