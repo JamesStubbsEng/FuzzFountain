@@ -91,14 +91,20 @@ void CircuitBase::prepare(float sampleRate)
 
     //for testing
     //std::ostringstream outStream;
+    //outStream << "NR: " << std::endl;
+    //outStream << NR << std::endl;
+    //outStream << "GR: " << std::endl;
+    //outStream << GR << std::endl;
+    //outStream << "Nx: " << std::endl;
+    //outStream << Nx << std::endl;
+    //outStream << "Gx: " << std::endl;
+    //outStream << Gx << std::endl;
     //outStream << "S: " << std::endl;
     //outStream << S << std::endl;
     //outStream << "Z: " << std::endl;
     //outStream << Z << std::endl;
     //outStream << "Gx: " << std::endl;
     //outStream << Gx << std::endl;
-    //outStream << "S: " << std::endl;
-    //outStream << S << std::endl;
     //outStream << "Si: " << std::endl;
     //outStream << Si << std::endl;
     //outStream << "Nxp: " << std::endl;

@@ -32,8 +32,10 @@ FuzzFountainAudioProcessor::FuzzFountainAudioProcessor()
     mixParameter = parameters.getRawParameterValue("mix");
     outputGainParameter = parameters.getRawParameterValue("outputGain");
 
+    /*for (int ch = 0; ch < 2; ch++)
+        diodeClipperCircuit[ch] = std::make_unique<DiodeClipperCircuit>();*/
     for (int ch = 0; ch < 2; ch++)
-        diodeClipperCircuit[ch] = std::make_unique<DiodeClipperCircuit>();
+        asymetricalCircuit[ch] = std::make_unique<AsymetricalEDCircuit>();
 }
 
 FuzzFountainAudioProcessor::~FuzzFountainAudioProcessor()
@@ -120,8 +122,10 @@ void FuzzFountainAudioProcessor::prepareToPlay (double sampleRate, int samplesPe
 
     parallelBuffer.setSize(getTotalNumOutputChannels(), samplesPerBlock);
 
+    /*for(int ch = 0; ch < 2; ch++)
+        diodeClipperCircuit[ch]->prepare((float)sampleRate * std::powf(2.0f, float(oversampleFactor))); */
     for(int ch = 0; ch < 2; ch++)
-        diodeClipperCircuit[ch]->prepare((float)sampleRate * std::powf(2.0f, float(oversampleFactor))); 
+        asymetricalCircuit[ch]->prepare((float)sampleRate * std::powf(2.0f, float(oversampleFactor)));
 }
 
 void FuzzFountainAudioProcessor::releaseResources()
@@ -131,8 +135,10 @@ void FuzzFountainAudioProcessor::releaseResources()
     outputGain.reset();
     oversampling.reset();
 
+    /*for (int ch = 0; ch < 2; ch++)
+        diodeClipperCircuit[ch]->reset();*/
     for (int ch = 0; ch < 2; ch++)
-        diodeClipperCircuit[ch]->reset();
+        asymetricalCircuit[ch]->reset();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -184,8 +190,10 @@ void FuzzFountainAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     //------Non linear dsp start--------
     auto osBlock = oversampling.processSamplesUp(block);
 
+    /*for (int ch = 0; ch < 2; ch++)
+        diodeClipperCircuit[ch]->process(osBlock.getChannelPointer(ch), osBlock.getNumSamples());*/
     for (int ch = 0; ch < 2; ch++)
-        diodeClipperCircuit[ch]->process(osBlock.getChannelPointer(ch), osBlock.getNumSamples());
+        asymetricalCircuit[ch]->process(osBlock.getChannelPointer(ch), osBlock.getNumSamples());
 
     oversampling.processSamplesDown(block);
         

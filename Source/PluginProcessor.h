@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "dsp/DiodeClipperCircuit.h"
+#include "dsp/AsymetricalEDCircuit.h"
 
 //==============================================================================
 /**
@@ -64,8 +65,8 @@ private:
 
     dsp::DryWetMixer<float> dryWetMixer;
 
-    size_t oversampleFactor = 1;
-    dsp::Oversampling<float> oversampling{ 2, oversampleFactor, dsp::Oversampling<float>::filterHalfBandPolyphaseIIR };
+    size_t oversampleFactor = 0;
+    dsp::Oversampling<float> oversampling{ 2, oversampleFactor, dsp::Oversampling<float>::filterHalfBandPolyphaseIIR};
 
     dsp::Gain<float> inputGain;
     dsp::Gain<float> outputGain;
@@ -73,6 +74,7 @@ private:
     AudioBuffer<float> parallelBuffer;
 
     std::unique_ptr<DiodeClipperCircuit> diodeClipperCircuit[2];
+    std::unique_ptr<AsymetricalEDCircuit> asymetricalCircuit[2];
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FuzzFountainAudioProcessor)
 };
