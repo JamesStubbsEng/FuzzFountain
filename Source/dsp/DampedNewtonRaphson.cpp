@@ -102,13 +102,6 @@ void DampedNewtonRaphson::solve(Eigen::MatrixXd* vn, Eigen::MatrixXd* in, Eigen:
     while (step.norm() > tol && iter < maxIterations)
     {
         getCurrents(vn, in);
-
-        J.noalias() = (*K) * componentsJacobian - eye;
-        //outStream << "J is:\n" << J << '\n';
-        //outStream << "F is:\n" << F << '\n';
-        //outStream << "step is:\n" << step << '\n';
-        //outStream << "Jinverse is:\n" << J.inverse() << '\n';
-        //DBG(outStream.str());
         
         J.noalias() = (*K) * componentsJacobian;
         J -= eye;

@@ -72,6 +72,6 @@ AsymetricalEDCircuit::AsymetricalEDCircuit()
 
     //auto end = std::chrono::system_clock::now();
     //auto elapsed =
-    //    std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    //DBG("Total Time elapsed: " + String(elapsed.count()) + " ms");
+    //    std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    //DBG("Total Time elapsed: " + String(elapsed.count()) + " us");
 }
