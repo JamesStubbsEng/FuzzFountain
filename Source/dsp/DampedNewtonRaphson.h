@@ -20,7 +20,8 @@ public:
         std::vector<NonLinearEquationBase*>* nonLinearComponents);
     void solve(Eigen::MatrixXd* vn, Eigen::MatrixXd* in, Eigen::MatrixXd* p);
 
-    void getCurrents(Eigen::MatrixXd* vn, Eigen::MatrixXd* in);
+    void getCurrentsAndJacobian(Eigen::MatrixXd* vn, Eigen::MatrixXd* in);
+    void updateCurrents(Eigen::MatrixXd* vn, Eigen::MatrixXd* in);
 private:
     Eigen::MatrixXd eye;
     Eigen::MatrixXd J;
@@ -38,6 +39,7 @@ private:
     double b = 1;
     int iter = 0;
     double tol = 1e-5;
+    //double tol = 3.16e-3;
     int maxIterations = 100;
 
     int numberOfFunctions;

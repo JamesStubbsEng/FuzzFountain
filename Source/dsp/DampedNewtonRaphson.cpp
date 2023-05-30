@@ -101,7 +101,7 @@ void DampedNewtonRaphson::solve(Eigen::MatrixXd* vn, Eigen::MatrixXd* in, Eigen:
     //std::ostringstream outStream;
     while (step.norm() > tol && iter < maxIterations)
     {
-        getCurrents(vn, in);
+        getCurrentsAndJacobian(vn, in);
         
         J.noalias() = (*K) * componentsJacobian;
         J -= eye;
@@ -112,19 +112,34 @@ void DampedNewtonRaphson::solve(Eigen::MatrixXd* vn, Eigen::MatrixXd* in, Eigen:
         (*vn) -= step;
         iter++;
     }
+    updateCurrents(vn, in);
     //-------------non damped NR end ------------------
 
     //No convergence if this asserts!
     jassert(iter < 100);
 }
 
-void DampedNewtonRaphson::getCurrents(Eigen::MatrixXd* vn, Eigen::MatrixXd* in)
+void DampedNewtonRaphson::getCurrentsAndJacobian(Eigen::MatrixXd* vn, Eigen::MatrixXd* in)
 {
     vn_index = 0;
     for (int componentIndex = 0; componentIndex < numComponents; componentIndex++)
     {
         numberOfFunctions = (*nonLinearComponents)[componentIndex]->getNumberOfFunctions();
         (*nonLinearComponents)[componentIndex]->calculateJacobian(&componentsJacobian, *vn, vn_index);
+        for (int functionIndex = 0; functionIndex < numberOfFunctions; functionIndex++)
+        {
+            (*in)(functionIndex + vn_index) = (*nonLinearComponents)[componentIndex]->calculateCurrents(*vn, vn_index, functionIndex);
+        }
+        vn_index += numberOfFunctions;
+    }
+}
+
+void DampedNewtonRaphson::updateCurrents(Eigen::MatrixXd* vn, Eigen::MatrixXd* in)
+{
+    vn_index = 0;
+    for (int componentIndex = 0; componentIndex < numComponents; componentIndex++)
+    {
+        numberOfFunctions = (*nonLinearComponents)[componentIndex]->getNumberOfFunctions();
         for (int functionIndex = 0; functionIndex < numberOfFunctions; functionIndex++)
         {
             (*in)(functionIndex + vn_index) = (*nonLinearComponents)[componentIndex]->calculateCurrents(*vn, vn_index, functionIndex);
