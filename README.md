@@ -1,2 +1,2 @@
 # FuzzFountain
-Fuzz pedal based on the Fuzz Face circuit.
+Playground for modeling non linear circuits for real time plugins.
