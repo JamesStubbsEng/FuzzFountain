@@ -44,6 +44,8 @@ protected:
     Eigen::MatrixXd Nu;
     Eigen::MatrixXd Nn;
     Eigen::MatrixXd No;
+
+    Eigen::MatrixXd u;
 private:
     //generated from user input
     Eigen::MatrixXd GR;
@@ -80,7 +82,6 @@ private:
 
     Eigen::MatrixXd p;
     Eigen::MatrixXd x;
-    Eigen::MatrixXd u;
     Eigen::MatrixXd vn;
     Eigen::MatrixXd in;
     Eigen::MatrixXd vo;

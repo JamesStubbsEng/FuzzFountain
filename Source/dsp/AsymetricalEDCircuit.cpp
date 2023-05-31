@@ -48,6 +48,9 @@ AsymetricalEDCircuit::AsymetricalEDCircuit()
     No = Eigen::MatrixXd::Zero(1, 6);
     No << 0, 0, 0, 1, 0, 0;
 
+    u = Eigen::MatrixXd::Zero(2, 1);
+    u(1, 0) = Vcc;
+
     //DiodeClipperCircuit object owns DiodeNLEQ object.
     npnNLEQ = std::make_unique<NPN_NLEQ>();
     nonLinearComponents.push_back(npnNLEQ.get());

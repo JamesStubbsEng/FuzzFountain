@@ -11,6 +11,8 @@
 #include <JuceHeader.h>
 #include "dsp/DiodeClipperCircuit.h"
 #include "dsp/AsymetricalEDCircuit.h"
+#include "dsp/FuzzFaceCircuit.h"
+#include "dsp/PNPCommonEmitterCircuit.h"
 
 //==============================================================================
 /**
@@ -75,6 +77,8 @@ private:
 
     std::unique_ptr<DiodeClipperCircuit> diodeClipperCircuit[2];
     std::unique_ptr<AsymetricalEDCircuit> asymetricalCircuit[2];
+    std::unique_ptr<FuzzFaceCircuit> fuzzFaceCircuit[2];
+    std::unique_ptr<PNPCommonEmitterCircuit> pNPCommonEmitterCircuit[2];
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FuzzFountainAudioProcessor)
 };

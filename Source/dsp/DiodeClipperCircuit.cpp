@@ -34,6 +34,8 @@ DiodeClipperCircuit::DiodeClipperCircuit()
     No = Eigen::MatrixXd::Zero(1, 2);
     No << 0, 1;
 
+    u = Eigen::MatrixXd::Zero(1, 1);
+
     //DiodeClipperCircuit object owns DiodeNLEQ object.
     diodeNLEQ = std::make_unique<DiodeNLEQ>();
     nonLinearComponents.push_back(diodeNLEQ.get());

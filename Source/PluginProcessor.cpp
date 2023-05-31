@@ -34,8 +34,12 @@ FuzzFountainAudioProcessor::FuzzFountainAudioProcessor()
 
     /*for (int ch = 0; ch < 2; ch++)
         diodeClipperCircuit[ch] = std::make_unique<DiodeClipperCircuit>();*/
+    //for (int ch = 0; ch < 2; ch++)
+    //    asymetricalCircuit[ch] = std::make_unique<AsymetricalEDCircuit>();
+    //for (int ch = 0; ch < 2; ch++)
+    //    fuzzFaceCircuit[ch] = std::make_unique<FuzzFaceCircuit>();
     for (int ch = 0; ch < 2; ch++)
-        asymetricalCircuit[ch] = std::make_unique<AsymetricalEDCircuit>();
+        pNPCommonEmitterCircuit[ch] = std::make_unique<PNPCommonEmitterCircuit>();
 }
 
 FuzzFountainAudioProcessor::~FuzzFountainAudioProcessor()

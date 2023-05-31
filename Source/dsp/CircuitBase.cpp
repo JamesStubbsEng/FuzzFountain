@@ -12,6 +12,7 @@
 
 void CircuitBase::prepare(float sampleRate)
 {
+    std::ostringstream outStream;
     fs = sampleRate;
     
     GR = Eigen::MatrixXd::Zero(resistors.size(), resistors.size());
@@ -25,10 +26,24 @@ void CircuitBase::prepare(float sampleRate)
     for (int i = 0; i < capacitors.size(); i++)
         Gx(i, i) = 2 * fs * capacitors[i];
 
+    //outStream << "NR.transpose() * GR * NR: " << std::endl;
+    //outStream << NR.transpose() * GR * NR << std::endl;
+    //outStream << "Nx.transpose() * Gx * Nx: " << std::endl;
+    //outStream << Nx.transpose() * Gx * Nx << std::endl;
+
     S11.noalias() = NR.transpose() * GR * NR + Nx.transpose() * Gx * Nx;
     S12 = Nu.transpose();
     S21 = Nu;
     S22 = Eigen::MatrixXd::Zero(Nu.rows(), Nu.rows());
+
+    //outStream << "S11: " << std::endl;
+    //outStream << S11 << std::endl;
+    //outStream << "S12: " << std::endl;
+    //outStream << S12 << std::endl;
+    //outStream << "S21: " << std::endl;
+    //outStream << S21 << std::endl;
+    //outStream << "S22: " << std::endl;
+    //outStream << S22 << std::endl;
 
     S = Eigen::MatrixXd::Zero(S11.rows() + S21.rows(), S11.cols() + S12.cols());
     S.topLeftCorner(S11.rows(), S11.cols()) = S11;
@@ -74,23 +89,12 @@ void CircuitBase::prepare(float sampleRate)
     in = Eigen::MatrixXd::Zero(Nn.rows(), 1);
     x = Eigen::MatrixXd::Zero(Nx.rows(), 1);
 
-    //use is a column vector of vi and vcc
-    if (hasVcc)
-    {
-        u = Eigen::MatrixXd::Zero(2, 1);
-        u(1, 0) = Vcc;
-    }
-    else
-    {
-        u = Eigen::MatrixXd::Zero(1, 1);
-    }
-
     p = Eigen::MatrixXd::Zero(G.rows(), x.cols());
 
     dnr = std::make_unique<DampedNewtonRaphson>(DampedNewtonRaphson(numNonlinears, &K, &nonLinearComponents));
 
     //for testing
-    //std::ostringstream outStream;
+
     //outStream << "NR: " << std::endl;
     //outStream << NR << std::endl;
     //outStream << "GR: " << std::endl;
@@ -122,7 +126,7 @@ void CircuitBase::prepare(float sampleRate)
 
 void CircuitBase::process(float* block, const int numSamples) noexcept
 {
-    //std::ostringstream outStream;
+    std::ostringstream outStream;
     for (int i = 0; i < numSamples; i++)
     {
         auto start = std::chrono::system_clock::now();

@@ -23,10 +23,20 @@
               file="Source/dsp/DiodeClipperCircuit.h"/>
         <FILE id="jQAbhf" name="DiodeNLEQ.cpp" compile="1" resource="0" file="Source/dsp/DiodeNLEQ.cpp"/>
         <FILE id="JB2pc8" name="DiodeNLEQ.h" compile="0" resource="0" file="Source/dsp/DiodeNLEQ.h"/>
+        <FILE id="xriJPt" name="FuzzFaceCircuit.cpp" compile="1" resource="0"
+              file="Source/dsp/FuzzFaceCircuit.cpp"/>
+        <FILE id="ZvWhcj" name="FuzzFaceCircuit.h" compile="0" resource="0"
+              file="Source/dsp/FuzzFaceCircuit.h"/>
         <FILE id="Y8jjBA" name="NonLinearEquationBase.h" compile="0" resource="0"
               file="Source/dsp/NonLinearEquationBase.h"/>
         <FILE id="Jf3Lnd" name="NPN_NLEQ.cpp" compile="1" resource="0" file="Source/dsp/NPN_NLEQ.cpp"/>
         <FILE id="FkCR0D" name="NPN_NLEQ.h" compile="0" resource="0" file="Source/dsp/NPN_NLEQ.h"/>
+        <FILE id="dxIrtH" name="PNP_NLEQ.cpp" compile="1" resource="0" file="Source/dsp/PNP_NLEQ.cpp"/>
+        <FILE id="DCj85H" name="PNP_NLEQ.h" compile="0" resource="0" file="Source/dsp/PNP_NLEQ.h"/>
+        <FILE id="S7Vamc" name="PNPCommonEmitterCircuit.cpp" compile="1" resource="0"
+              file="Source/dsp/PNPCommonEmitterCircuit.cpp"/>
+        <FILE id="NJgunE" name="PNPCommonEmitterCircuit.h" compile="0" resource="0"
+              file="Source/dsp/PNPCommonEmitterCircuit.h"/>
       </GROUP>
       <FILE id="UZjxqX" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
